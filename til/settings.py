@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # enable multi-sites
-    'django.contrib.sites'
+    'django.contrib.sites',
     
     # local apps
     'feed',
