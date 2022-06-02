@@ -1,0 +1,17 @@
+{% extends "./components/base.html" %}
+
+{% block title %}Today · I · Learned{% endblock title %}
+
+{% block body %}
+	{% for post in posts %}
+		{% if post.dateCreated == post.dateModified %}
+			{{post.dateCreated}}
+		{% else %}
+		{{post.dateModified}}
+		{% endif %}
+		 | T·I·L {{post.content}}
+		<hr>
+	{% empty %}
+		No posts yet
+	{% endfor %}
+{% endblock body %}
