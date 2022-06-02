@@ -38,7 +38,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # enable multi-sites
+    'django.contrib.sites'
+    
+    # local apps
     'feed',
+
+    # 3rd party apps
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount'
+
 ]
 
 MIDDLEWARE = [
