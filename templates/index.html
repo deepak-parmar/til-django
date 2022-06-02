@@ -4,12 +4,7 @@
 
 {% block body %}
 	{% for post in posts %}
-		{% if post.dateCreated == post.dateModified %}
-			{{post.dateCreated}}
-		{% else %}
-		{{post.dateModified}}
-		{% endif %}
-		 | T·I·L {{post.content}}
+		{{post.dateCreated}} | T·I·L {{post.content}} | {% if post.dateModified %}{{post.dateModified}}{% else %}Not modified{% endif %}
 		<hr>
 	{% empty %}
 		No posts yet
