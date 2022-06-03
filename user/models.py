@@ -10,7 +10,7 @@ class UserProfile(models.Model):
 
 	def __str__(self):
 		return self.user.username
-	
+
 	# creates a new profile when new django user is created.
 	@receiver(post_save, sender=User)
 	def createUserProfile(sender, instance, created, **kwargs):

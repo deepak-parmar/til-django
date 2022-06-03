@@ -27,9 +27,9 @@ class IndexView(ListView):
     context_object_name = "posts"
     queryset = []
 
-	# Format every date
+    # Format every date
     for post in Post.objects.all().order_by("dateCreated"):
-		# check if post is modified
+        # check if post is modified
         if post.dateCreated == post.dateModified:
             post.dateModified = False
         else:
