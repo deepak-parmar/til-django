@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     
     # local apps
     'feed',
+    'user',
 
     # 3rd party apps
     'allauth',
