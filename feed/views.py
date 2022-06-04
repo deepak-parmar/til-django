@@ -57,3 +57,22 @@ class PostDetailView(DetailView):
         post.dateCreated = formatDate(post.dateCreated)
         context["post"] = post
         return context
+
+
+class PostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    template_name = "post.html"
+    fields = ["content"]
+    success_url = "/"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Get current user
+        self.request = request
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        # Fill author field with current user
+        post.author = self.request.user
+        post.save()
+        return super().form_valid(form)
