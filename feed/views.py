@@ -1,4 +1,6 @@
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
+from django.views.generic.edit import CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Post
 
 
@@ -36,3 +38,22 @@ class IndexView(ListView):
             post.dateModified = formatDate(post.dateModified)
         post.dateCreated = formatDate(post.dateCreated)
         queryset.append(post)
+
+
+class PostDetailView(DetailView):
+    http_method_names = ["get"]
+    model = Post
+    context_object_name = "post"
+    template_name = "view.html"
+
+    # Format date of requested post
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        post = self.get_object()
+        if post.dateCreated == post.dateModified:
+            post.dateModified = False
+        else:
+            post.dateModified = formatDate(post.dateModified)
+        post.dateCreated = formatDate(post.dateCreated)
+        context["post"] = post
+        return context
