@@ -1,0 +1,21 @@
+{% extends "./components/base.html" %}
+
+{% block title %}Today · I · Learned{% endblock title %}
+
+{% block body %}
+	{% for post in posts %}
+		<a href="{% url 'feed:view' post.id %}">
+			{{post.dateCreated}}
+			| from @{{post.author}}
+			| T·I·L {{post.content}} | 
+			{% if post.dateModified %}
+				{{post.dateModified}}
+			{% else %}
+				Not modified
+			{% endif %}
+		</a>
+		<hr>
+	{% empty %}
+		No posts yet
+	{% endfor %}
+{% endblock body %}

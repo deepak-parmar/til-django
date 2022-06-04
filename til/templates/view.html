@@ -1,0 +1,17 @@
+{% extends "./components/base.html" %}
+
+{% block title %}
+	Today I learned {{post.content}} from {{post.author.first_name}} {{post.author.last_name}} (@{{post.author}})
+{% endblock title %}
+
+{% block body %}
+		{{post.dateCreated}}
+		 | from @{{post.author}}
+		 | T·I·L {{post.content}} | 
+		{% if post.dateModified %}
+			{{post.dateModified}}
+		{% else %}
+			Not modified
+		{% endif %}
+		<hr>
+{% endblock body %}
