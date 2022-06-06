@@ -15,4 +15,4 @@ class Follower(models.Model):
         return f"{self.followedBy.id} follows {self.following.id}"
 
     class Meta:
-        uniqueTogether = ("followedBy", "following")
+        unique_together = ("followedBy", "following")
