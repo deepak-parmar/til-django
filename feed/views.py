@@ -27,17 +27,20 @@ class IndexView(ListView):
     template_name = "index.html"
     model = Post
     context_object_name = "posts"
-    queryset = []
 
-    # Format every date
-    for post in Post.objects.all().order_by("dateCreated"):
-        # check if post is modified
-        if post.dateCreated == post.dateModified:
-            post.dateModified = False
-        else:
-            post.dateModified = formatDate(post.dateModified)
-        post.dateCreated = formatDate(post.dateCreated)
-        queryset.append(post)
+    # overwrite queryset
+    def get_queryset(self):
+        self.queryset = []
+        # format every date
+        for post in Post.objects.all().order_by("dateCreated"):
+            # check if post is modified
+            if post.dateCreated == post.dateModified:
+                post.dateModified = False
+            else:
+                post.dateModified = formatDate(post.dateModified)
+            post.dateCreated = formatDate(post.dateCreated)
+            self.queryset.append(post)
+        return super().get_queryset()
 
 
 class PostDetailView(DetailView):
