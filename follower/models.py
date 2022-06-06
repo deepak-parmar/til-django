@@ -1,3 +1,4 @@
+from enum import unique
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -12,3 +13,6 @@ class Follower(models.Model):
 
     def __str__(self):
         return f"{self.followedBy.id} follows {self.following.id}"
+
+    class Meta:
+        uniqueTogether = ("followedBy", "following")
