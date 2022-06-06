@@ -1,6 +1,7 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import TemplateView, DetailView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from requests import request
 from .models import Post
 
 
@@ -22,25 +23,42 @@ def formatDate(date):
         return date.strftime("%B %d, %Y · %I:%M %p")
 
 
-class IndexView(ListView):
+def formatPostDates(posts):
+    formattedPost = []
+    for post in posts:
+        # check if post is modified
+        if post.dateCreated == post.dateModified:
+            post.dateModified = False
+        else:
+            post.dateModified = formatDate(post.dateModified)
+        post.dateCreated = formatDate(post.dateCreated)
+        formattedPost.append(post)
+    return posts
+
+
+class IndexView(TemplateView):
     http_method_names = ["get"]
     template_name = "index.html"
-    model = Post
-    context_object_name = "posts"
 
-    # overwrite queryset
-    def get_queryset(self):
-        self.queryset = []
-        # format every date
-        for post in Post.objects.all().order_by("dateCreated"):
-            # check if post is modified
-            if post.dateCreated == post.dateModified:
-                post.dateModified = False
-            else:
-                post.dateModified = formatDate(post.dateModified)
-            post.dateCreated = formatDate(post.dateCreated)
-            self.queryset.append(post)
-        return super().get_queryset()
+    def dispatch(self, request, *args, **kwargs):
+        self.request = request
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        posts = []
+        if self.request.user.is_authenticated:
+            # TODO make follower app to filter out posts
+            # following = list(
+            #     Follower.objects.filter(followedBy=self.request.user).value_list(
+            #         "following", flat=True
+            #     )
+            # )
+            posts = formatPostDates(list(Post.objects.all().order_by("-id")))
+        else:
+            posts = formatPostDates(list(Post.objects.all().order_by("-dateCreated")))
+        context["posts"] = posts
+        return context
 
 
 class PostDetailView(DetailView):
