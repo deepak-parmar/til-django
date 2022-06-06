@@ -1,0 +1,8 @@
+body {
+  background-color: #000;
+  color: #fff;
+  font-family: "Roboto";
+}
+
+a {color: hotpink}
+a:visited {color: pink}
