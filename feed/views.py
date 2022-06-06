@@ -1,7 +1,6 @@
 from django.views.generic import TemplateView, DetailView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from requests import request
 from .models import Post
 
 
