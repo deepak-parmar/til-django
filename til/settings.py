@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # local apps
     "feed",
     "user",
+    "follower",
     # 3rd party apps
     "allauth",
     "allauth.account",
