@@ -2,20 +2,27 @@
 
 {% block title %}Today · I · Learned{% endblock title %}
 
-{% block body %}
-	{% for post in posts %}
-		<a href="{% url 'feed:view' post.id %}">
-			{{post.dateCreated}}
-			| from @{{post.author}}
-			| T·I·L {{post.content}} | 
-			{% if post.dateModified %}
-				{{post.dateModified}}
-			{% else %}
-				Not modified
-			{% endif %}
-		</a>
-		<hr>
-	{% empty %}
-		No posts yet
-	{% endfor %}
-{% endblock body %}
+{% block content %}
+<div class="w-full p-3 flex flex-col mt-12">
+	{% if request.user.is_authenticated %}
+	<form id="js-create-post-form" class="hidden mb-3">
+		<div class="flex flex-col gap-3 p-3 bg-slate-800 rounded-xl">
+			{% csrf_token %}
+			<textarea name="content" id="id_content" class="text-xl text-white bg-transparent border-2 border-zinc-300 outline-2 outline-pink-700 max-h-80 min-h-[14rem] p-4 rounded-xl" maxlength="280" placeholder="What did you learn today?" required></textarea>
+			<div>
+				<span class="text-zinc-400 inline-block py-2"><span id="contentLength">0</span>/280</span>
+				<button type="submit" class="text-white font-semibold float-right py-2 px-12 rounded-xl bg-pink-700 disabled:opacity-50" disabled>Post</button>
+			</div>
+		</div>
+	</form>
+	{% endif %}
+
+	<div class="flex flex-col gap-3 js-post-container">
+		{% for post in posts %}
+			{% include "./components/card.html" with post=post %}
+		{% empty %}
+			No posts yet
+		{% endfor %}
+	</div>
+</div>
+{% endblock content %}

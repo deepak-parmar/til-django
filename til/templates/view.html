@@ -4,14 +4,29 @@
 	Today I learned {{post.content}} from {{post.author.first_name}} {{post.author.last_name}} (@{{post.author}})
 {% endblock title %}
 
-{% block body %}
-		{{post.dateCreated}}
-		 | from @{{post.author}}
-		 | T·I·L {{post.content}} | 
-		{% if post.dateModified %}
-			{{post.dateModified}}
-		{% else %}
-			Not modified
+{% block content %}
+	<div class="w-full p-3 flex flex-col mt-12">
+		{% if request.user.is_authenticated %}
+		<form id="js-create-post-form" class="hidden mb-3">
+			<div class="flex flex-col gap-3 p-3 bg-slate-800 rounded-xl">
+				{% csrf_token %}
+				<textarea name="content" id="id_content" class="text-xl text-white bg-transparent border-2 border-zinc-300 outline-2 outline-pink-700 max-h-80 min-h-[14rem] p-4 rounded-xl" maxlength="280" placeholder="What did you learn today?" required></textarea>
+				<div>
+					<span class="text-zinc-400 inline-block py-2"><span id="contentLength">0</span>/280</span>
+					<button type="submit" class="text-white font-semibold float-right py-2 px-12 rounded-xl bg-pink-700 disabled:opacity-50" disabled>Post</button>
+				</div>
+			</div>
+		</form>
 		{% endif %}
-		<hr>
-{% endblock body %}
+
+		<div class="flex flex-col gap-3 js-post-container">
+			{% include "./components/card.html" with post=post view=True %}
+			{% if request.user.is_authenticated and request.user == post.author %}
+				<form action="{% url 'feed:delete' post.id %}" method="POST">
+					{% csrf_token %}
+					<button type="submit" value="DELETE">Delete this post</button>
+				</form>
+			{% endif %}
+		</div>
+	</div>
+{% endblock content %}

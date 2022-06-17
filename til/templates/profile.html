@@ -1,1 +1,95 @@
-{{profile.username}}
+{% extends "./components/base.html" %}
+
+{% block content %}
+  {% comment %} {{profile.first_name}} {{profile.last_name}}
+  <br><small>@{{profile.username}}</small>
+  <br><br>
+  Total posts: {{total_post_count}}
+  <br>
+  Following: {{total_following_count}}
+  <br>
+  Followers: {{total_follower_count}}
+  <br><br>
+  {% if request.user.is_anonymous %}
+    <button type="button">Follow (Link to login)</button>
+  {% else %}
+    {% if show_follow_button %}
+      <button type="button" class="js-follow" data-username={{profile.username}}
+        data-action="{% if beingFollowed %}un{% endif %}follow" data-url="{% url 'user:follow' profile.username %}">
+        {% if beingFollowed %}Unfollow{% else %}Follow{% endif %}
+      </button>
+    {% endif %}
+  {% endif %}
+  <br><br> {% endcomment %}
+  <div class="w-full p-3 flex flex-col mt-12">
+    {% include "./components/post-form.html" %}
+
+    <div class="bg-pink-700 p-16 rounded-xl">
+      <h1 class="text-4xl text-white font-bold">
+        {% if profile.first_name or profile.last_name %}
+        {{profile.first_name}} {{profile.last_name}}{% else %}{{profile.username}}{% endif %}
+      </h1>
+      <h2>@{{profile.username}}</h2>
+      <div class="float-right">
+        {% if request.user.is_anonymous %}
+        <button type="button" class="marker:p-3 border-2 rounded-xl text-white">Follow (Link to login)</button>
+      {% else %}
+        {% if show_follow_button %}
+          <button type="button" class="p-3 border-2 rounded-xl text-white js-follow" data-username={{profile.username}}
+            data-action="{% if beingFollowed %}un{% endif %}follow" data-url="{% url 'user:follow' profile.username %}">
+            {% if beingFollowed %}Unfollow{% else %}Follow{% endif %}
+          </button>
+        {% endif %}
+      {% endif %}
+      </div>
+    </div>
+    
+    <div class="p-3 text-white text-xl font-medium">
+      {{total_post_count}} Posts
+      &nbsp;&nbsp;&nbsp;<b>·</b>&nbsp;&nbsp;&nbsp;
+      {% if total_follower_count %}{{total_follower_count}} Followers{% endif %}
+      &nbsp;&nbsp;&nbsp;<b>·</b>&nbsp;&nbsp;&nbsp;
+      {% if total_following_count %}Following {{total_following_count}}{% endif %}
+    </div>
+
+    <hr>
+
+    {% if request.user.is_authenticated and request.user.username == profile.username %}
+      <div class="flex justify-around items-center gap-4 flex-wrap">
+        <form action="{% url 'user:update-name' request.user %}" method="POST" class="mt-8 flex flex-col justify-center gap-3 flex-wrap">
+          {% csrf_token %}
+          <p class="text-xl text-white font-medium pb-2">Update name</p>
+          <input type="text" class="p-3 bg-transparent border-2 outline-2 outline-pink-700 text-white text-xl rounded-xl" name="first_name" id="id_first_name" value={{profile.first_name}}>
+          <input type="text" class="p-3 bg-transparent border-2 outline-2 outline-pink-700 text-white text-xl rounded-xl" name="last_name" id="id_last_name" value={{profile.last_name}}>
+          <button type="submit" class="p-3 bg-pink-700 rounded-xl">Update Name</button>
+        </form>
+
+        <form action="{% url 'user:update-username' request.user %}" method="post" class="flex flex-col gap-3 flex-wrap">
+          {% csrf_token %}
+          <p class="text-xl text-white font-medium pb-2">Update username</p>
+          <input type="text" class="p-3 bg-transparent border-2 outline-2 outline-pink-700 text-white text-xl rounded-xl" name="username" id="id_username" value={{profile.username}}>
+          <button type="submit" class="p-3 bg-pink-700 rounded-xl">Update Username</button>
+        </form>
+      </div>
+      <br><br><hr><br>
+      <form action="{% url 'user:delete' request.user %}" method="POST" class="mt-4 flex flex-wrap justify-between items-center gap-3">
+        <a href="{% url 'account_change_password' %}" class="font-medium py-3 px-6 rounded-xl text-white bg-yellow-600">Change Password</a>
+        {% csrf_token %}
+        <div class="flex flex-wrap justify-end items-center gap-3">
+          <p class="text-yellow-500 py-3">This action cannot be undone!</p>
+          <button type="submit" class="font-medium py-3 px-6 rounded-xl text-white bg-red-700 bi bi-trash-fill" value="DELETE"><span class="pl-3">Delete my account</span></button>
+        </div>
+      </form>
+    {% endif %}
+    <br><br><br>
+
+    {% comment %} <h1>{% if request.user.username == profile.username %}Your{% else %}{{profile.username}}'s{% endif %} posts...</h1>
+    <div class="flex flex-col gap-3 js-post-container">
+      {% for post in posts %}
+        {% include "./components/card.html" with post=post %}
+      {% empty %}
+        No posts yet
+      {% endfor %}
+    </div> {% endcomment %}
+  </div>
+{% endblock content %}

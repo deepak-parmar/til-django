@@ -1,0 +1,21 @@
+{% extends "./components/base.html" %}
+
+{% block title %}Explore posts | Today · I · Learned{% endblock %}
+
+{% block content %}
+
+  <div class="p-3 flex flex-col mt-12">
+    
+    {% include "./components/post-form.html" %}
+
+    <div class="flex flex-col gap-3 js-post-container">
+      {% for post in posts %}
+        {% include "./components/card.html" with post=post %}
+      {% empty %}
+        No posts yet
+      {% endfor %}
+    </div>
+  </div>
+
+  {% comment %} {% include "./components/modal.html" %} {% endcomment %}
+{% endblock content %}

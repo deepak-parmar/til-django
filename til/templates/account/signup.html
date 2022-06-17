@@ -1,0 +1,42 @@
+{% extends "../components/base.html" %}
+
+{% load i18n %}
+
+{% block title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+<div class="w-full p-3 flex  flex-col justify-center items-center mt-24">
+
+<p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
+
+<form class="signup flex flex-col gap-4 text-white mt-6" id="signup_form" method="post" action="{% url 'account_signup' %}">
+  {% csrf_token %}
+  <style>
+    p {color: white}
+    .signup input, .signup button {
+      background: transparent;
+      color: white;
+      border: solid .2rem white;
+      padding: 1rem 2rem;
+      border-radius: .75rem;
+    }
+
+    .signup label {
+      display: block;
+    }
+
+    .signup button {
+      background: #db2777;
+      border: none;
+      font-size: 1.5rem
+    }
+  </style>
+  {{ form.as_p }}
+  {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+  {% endif %}
+  <button type="submit">{% trans "Sign Up" %} &raquo;</button>
+</form>
+</div>
+
+{% endblock %}

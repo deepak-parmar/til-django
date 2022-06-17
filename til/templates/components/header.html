@@ -1,0 +1,17 @@
+<nav class="w-full text-zinc-300 fixed z-[1000] p-2 bg-slate-900/80 backdrop-blur-xl flex items-center px-4">
+  <button id="menuBtn" class="text-3xl px-4 inline-block lg:hidden bi bi-list" aria-label="Toggle navigation"></button>
+  <div class="flex-grow text-3xl font-extrabold text-pink-600 px-4" aria-label="Today I Learned">
+    T<span class="text-zinc-300">·</span>I<span class="text-zinc-300">·</span>L
+  </div>
+  {% if request.user.is_anonymous %}
+    <a href="{% url 'account_login' %}" class="text-lg rounded-xl flex justify-start items-center">
+      <span class="text-2xl bi bi-plus-lg"></span>
+      <span class="pl-2">Post</span>
+    </a>
+  {% else %}
+    <button id="navPostBtn" class="text-lg px-3 rounded-xl flex justify-start items-center {% if post_active %} font-bold bg-pink-700{% endif %}">
+      <span class="text-2xl bi bi-plus-lg"></span>
+      <span class="pl-3">Post</span>
+    </button>
+  {% endif %}
+</nav>

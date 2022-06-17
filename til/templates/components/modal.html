@@ -1,0 +1,7 @@
+<div class="w-full h-screen absolute top-0 flex justify-center bg-black/50 z-50 invisible">
+  <form id="js-create-post-form">
+    {% csrf_token %}
+    <textarea name="content" id="id_content" maxlength="280" required></textarea>
+    <button type="submit">Post</button>
+  </form>  
+</div>

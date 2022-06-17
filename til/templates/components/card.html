@@ -1,0 +1,18 @@
+<article class="group bg-pink-700 text-white flex flex-col items-start ring ring-transparent hover:ring-white rounded-xl">
+  <section class="w-full pointer-events-none">
+    <section class="w-full p-3 pl-4 pb-0 flex flex-wrap font-medium text-sm">
+      <a href="{% url 'user:profile' post.author %}" class="pointer-events-auto">
+        <span class="mr-1 hover:underline">
+          {% if post.author.first_name or post.author.last_name %}
+            {{post.author.first_name}} {{post.author.last_name}}{% else %}{{post.author.username}}{% endif %}</span>
+        <span class="text-gray-100 font-light mr-2">@{{post.author}}</span>
+      </a>
+      <time class="text-gray-100"><span class="hidden md:inline">-&nbsp;&nbsp;</span>{{post.dateCreated}}</time>
+    </section>
+  </section>
+  <a href="{% url 'feed:view' post.id %}" class="hover:bg-gray-50/10 rounded-b-xl block w-full p-8 pt-2 {% if view %}pb-16{% else %}pb-3{% endif %}">
+    <h1 class="block w-full leading-tight {% if view %}text-3xl{% else %}text-xl{% endif %} font-semibold mb-4 drop-shadow-[0_0_1px_rgba(16,16,16,0.5)]">
+      <pre class="break-all whitespace-pre-wrap">{{post.content}}</pre>
+    </h1>
+  </a>
+</article>

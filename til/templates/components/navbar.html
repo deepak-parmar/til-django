@@ -1,10 +1,26 @@
-<nav>
-  <a href="{% url 'feed:index' %}">Home</a>
-  <a href="{% url 'feed:post' %}">Post</a>
+<div class="flex flex-row justify-between items-start">
+<nav class="text-zinc-300 bg-slate-900/80 backdrop-blur-xl h-full flex flex-col gap-2 mt-[3.28rem] p-4 fixed -ml-56 lg:-ml-0 transition-all ease-out md:fixed lg:fixed lg:flex z-50 js-navbar">
+  <a href="{% url 'feed:index' %}" class="text-lg py-3 pl-3 pr-20 rounded-xl flex justify-start items-center">
+    <span class="text-2xl bi bi-house"></span>
+    <span class="pl-3{% if home_active %} font-bold{% endif %}">Home</span>
+  </a>
+  <a href="{% url 'feed:explore' %}" class="text-lg py-3 pl-3 pr-20 rounded-xl flex justify-start items-center">
+    <span class="text-2xl bi bi-hash"></span>
+    <span class="pl-3{% if explore_active %} font-bold{% endif %}">Explore</span>
+  </a>
+
   {% if request.user.is_authenticated %}
-    <a href="{% url 'account_logout' %}">Logout</a>
+    <a href="{% url 'user:profile' request.user.username %}" class="text-lg py-3 pl-3 pr-20 rounded-xl flex justify-start items-center">
+      <span class="text-2xl bi bi-person"></span>
+      <span class="pl-3 {% if profile_active %} font-bold{% endif %}">Profile</span>
+    </a>
+    <a href="{% url 'account_logout' %}" class="text-lg py-3 pl-3 pr-20 rounded-xl flex justify-start items-center">
+      <span class="text-2xl bi bi-box-arrow-left"></span>
+      <span class="pl-3">Logout</span>
+    </a>
   {% else %}
-    <a href="{% url 'account_login' %}">Login</a>
+    <a href="{% url 'account_login' %}" class="text-lg py-3 pl-3 pr-20 rounded-xl flex justify-start items-center">
+      <span class="text-2xl bi bi-shield-lock"></span>
+    <span class="pl-3">Login</span></a>
   {% endif %}
 </nav>
-<hr>
