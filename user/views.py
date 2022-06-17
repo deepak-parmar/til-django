@@ -1,5 +1,7 @@
+from webbrowser import get
+from django import dispatch
 from django.http import HttpResponseBadRequest, JsonResponse
-from django.views.generic import View, DetailView, DeleteView
+from django.views.generic import View, DetailView, DeleteView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from feed.models import Post
@@ -108,3 +110,16 @@ class ProfileDeleteView(DeleteView):
     slug_field = "username"
     slug_url_kwarg = "username"
     success_url = "/"
+
+
+class ProfileNameUpdateView(UpdateView):
+    model = User
+    fields = ["first_name", "last_name"]
+    template_name = "profile.html"
+    slug_field = "username"
+    slug_url_kwarg = "username"
+
+    def dispatch(self, request, *args, **kwargs):
+        self.request = request
+        self.success_url = f"/user/{request.user.username}"
+        return super().dispatch(request, *args, **kwargs)
