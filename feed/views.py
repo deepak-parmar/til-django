@@ -1,7 +1,11 @@
-from django.views.generic import TemplateView, DetailView
+import json
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import render
+from django.views.generic import TemplateView, DetailView, ListView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Post
+from follower.models import Follower
 
 
 # ? Worked without importing date from datetime
@@ -47,16 +51,37 @@ class IndexView(TemplateView):
         context = super().get_context_data(**kwargs)
         posts = []
         if self.request.user.is_authenticated:
-            # TODO make follower app to filter out posts
-            # following = list(
-            #     Follower.objects.filter(followedBy=self.request.user).value_list(
-            #         "following", flat=True
-            #     )
-            # )
-            posts = formatPostDates(list(Post.objects.all().order_by("-id")))
+            # List of users followed by current user
+            following = list(
+                Follower.objects.filter(followedBy=self.request.user).values_list(
+                    "following", flat=True
+                )
+            )
+            # Filter out posts that are from the following list
+            posts = formatPostDates(
+                Post.objects.filter(author__in=following).order_by("-dateCreated")
+            )
         else:
             posts = formatPostDates(list(Post.objects.all().order_by("-dateCreated")))
         context["posts"] = posts
+        return context
+
+
+class PostExploreView(ListView):
+    http_method_names = ["get"]
+    template_name = "explore.html"
+    model = Post
+    context_object_name = "posts"
+
+    def get_queryset(self):
+        self.queryset = formatPostDates(
+            list(Post.objects.all().order_by("-dateCreated"))
+        )
+        return super().get_queryset()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["explore_active"] = True
         return context
 
 
@@ -73,8 +98,8 @@ class PostDetailView(DetailView):
         if post.dateCreated == post.dateModified:
             post.dateModified = False
         else:
-            post.dateModified = formatDate(post.dateModified)
-        post.dateCreated = formatDate(post.dateCreated)
+            post.dateModified = post.dateModified
+        post.dateCreated = post.dateCreated
         context["post"] = post
         return context
 
@@ -90,9 +115,26 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         self.request = request
         return super().dispatch(request, *args, **kwargs)
 
-    def form_valid(self, form):
-        post = form.save(commit=False)
-        # Fill author field with current user
-        post.author = self.request.user
-        post.save()
-        return super().form_valid(form)
+    # def form_valid(self, form):
+    #     print("!!!!!!!!!!!!!!gets here")
+    #     post = form.save(commit=False)
+    #     # Fill author field with current user
+    #     post.author = self.request.user
+    #     post.save()
+    #     return super().form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+        newPost = Post.objects.create(
+            content=request.POST.get("content"), author=request.user
+        )
+        # if incoming request is ajax
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            newPost.dateCreated = formatDate(newPost.dateCreated)
+            return render(
+                request,
+                "./components/card.html",
+                {"post": newPost},
+                content_type="application/html",
+            )
+        else:
+            return HttpResponseRedirect(self.success_url)
