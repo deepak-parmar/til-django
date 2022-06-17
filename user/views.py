@@ -93,14 +93,14 @@ class FollowView(LoginRequiredMixin, View):
             if follower:
                 follower.delete()
 
-            return JsonResponse(
-                {
-                    "success": True,
-                    "button-label": "Unfollow"
-                    if data["action"] == "follow"
-                    else "Follow",
-                }
-            )
+        return JsonResponse(
+            {
+                "success": True,
+                "buttonLabel": "Unfollow"
+                if data["action"] == "follow"
+                else "Follow",
+            }
+        )
 
 
 class ProfileDeleteView(DeleteView):
