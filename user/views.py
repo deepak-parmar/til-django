@@ -101,3 +101,10 @@ class FollowView(LoginRequiredMixin, View):
                     else "Follow",
                 }
             )
+
+
+class ProfileDeleteView(DeleteView):
+    model = User
+    slug_field = "username"
+    slug_url_kwarg = "username"
+    success_url = "/"
