@@ -56,3 +56,48 @@ class ProfileDetailView(DetailView):
         context["profile_active"] = True
 
         return context
+
+
+class FollowView(LoginRequiredMixin, View):
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwargs):  # removed arg-kwargs to see what happens
+        data = request.POST.dict()
+
+        if "action" not in data or "username" not in data:
+            return HttpResponseBadRequest(
+                JsonResponse({"success": False, "message": "Missing parameters"})
+            )
+
+        try:
+            requestedUser = User.objects.get(username=data["username"])
+        except User.DoesNotExist:
+            return HttpResponseBadRequest(
+                JsonResponse({"success": False, "message": "User not found"})
+            )
+
+        if data["action"] == "follow":
+            follower, created = Follower.objects.get_or_create(
+                followedBy=request.user, following=requestedUser
+            )
+            print(follower, created)
+        else:
+            try:
+                follower = Follower.objects.get(
+                    followedBy=request.user, following=requestedUser
+                )
+            except Follower.DoesNotExist:
+                follower = None
+
+            # delete record of follower is found
+            if follower:
+                follower.delete()
+
+            return JsonResponse(
+                {
+                    "success": True,
+                    "button-label": "Unfollow"
+                    if data["action"] == "follow"
+                    else "Follow",
+                }
+            )
