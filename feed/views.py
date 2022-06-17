@@ -1,7 +1,7 @@
 import json
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.views.generic import TemplateView, DetailView, ListView
+from django.views.generic import TemplateView, DetailView, ListView, DeleteView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Post
@@ -64,6 +64,7 @@ class IndexView(TemplateView):
         else:
             posts = formatPostDates(list(Post.objects.all().order_by("-dateCreated")))
         context["posts"] = posts
+        context["home_active"] = True
         return context
 
 
@@ -138,3 +139,8 @@ class PostCreateView(LoginRequiredMixin, CreateView):
             )
         else:
             return HttpResponseRedirect(self.success_url)
+
+
+class PostDeleteView(DeleteView):
+    model = Post
+    success_url = "/"
