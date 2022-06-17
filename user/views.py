@@ -50,9 +50,7 @@ class ProfileDetailView(DetailView):
                 ).exists()
 
         context["posts"] = formatPostDates(
-            list(
-                Post.objects.filter(author=requestingUser).order_by("-dateCreated")
-            )
+            list(Post.objects.filter(author=requestingUser).order_by("-dateCreated"))
         )
 
         context["profile_active"] = True
@@ -120,7 +118,6 @@ class ProfileNameUpdateView(UpdateView):
     slug_url_kwarg = "username"
 
     def dispatch(self, request, *args, **kwargs):
-        self.request = request
         self.success_url = f"/user/{request.user.username}"
         return super().dispatch(request, *args, **kwargs)
 
