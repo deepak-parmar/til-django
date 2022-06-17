@@ -123,3 +123,15 @@ class ProfileNameUpdateView(UpdateView):
         self.request = request
         self.success_url = f"/user/{request.user.username}"
         return super().dispatch(request, *args, **kwargs)
+
+
+class ProfileUsernameUpdateView(UpdateView):
+    model = User
+    fields = ["username"]
+    slug_field = "username"
+    slug_url_kwarg = "username"
+    success_url = "/"
+
+    def dispatch(self, request, *args, **kwargs):
+        self.success_url = f"/user/{request.POST.get('username')}"
+        return super().dispatch(request, *args, **kwargs)
