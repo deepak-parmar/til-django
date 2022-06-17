@@ -116,6 +116,12 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         self.request = request
         return super().dispatch(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["post_active"] = True
+        return context
+    
+
     # def form_valid(self, form):
     #     print("!!!!!!!!!!!!!!gets here")
     #     post = form.save(commit=False)
