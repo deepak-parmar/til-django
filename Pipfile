@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 django = "*"
 django-allauth = "*"
+django-heroku = "0.3.1"
 
 [dev-packages]
 
